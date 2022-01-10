@@ -1,4 +1,4 @@
-const APIKEY = "28e11712f2e26aa40b72ca261be15e9f";
+
 const myMap = L.map("map").setView([28.5915128, 77.2192949], 10);
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const attribution =
