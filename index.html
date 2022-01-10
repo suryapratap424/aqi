@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <title>Air-Pollution</title>
+    <style>
+        *{
+            margin: 0%;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #container{
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: row;
+        }
+        #data{
+            width: 25%;
+            height: 100vh;
+            display: inline;
+            border: 3px solid black;
+        }
+        #map{
+            width: 75%;
+            height: 100vh;
+        }
+        #comp{
+            text-transform: uppercase;
+            font-size: large;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="data">
+            <p id="lat"></p>
+            <p id="lng"></p>
+            <ul id="comp"></ul>
+        </div>
+        <div id="map"></div>
+    </div>
+    <script src="./stations.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>
