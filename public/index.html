@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+  
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
     <title>Air-Pollution</title>
     <style>
-        *{
+        * {
             margin: 0%;
             padding: 0;
             box-sizing: border-box;
         }
-        #container{
+
+        #container {
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: row;
         }
-        #data{
+
+        #side {
             width: 25%;
             height: 100vh;
             display: inline;
             border: 3px solid black;
         }
-        #map{
+
+        #map {
             width: 75%;
             height: 100vh;
         }
-        #comp{
+
+        #comp {
             text-transform: uppercase;
             font-size: large;
         }
     </style>
 </head>
+
 <body>
     <div id="container">
-        <div id="data">
-            <p id="lat"></p>
-            <p id="lng"></p>
-            <ul id="comp"></ul>
+        <div id='side'>
+            <div id="legend"></div>
+            <div id="data">
+                <p id="lat"></p>
+                <p id="lng"></p>
+                <ul id="comp"></ul>
+            </div>
         </div>
         <div id="map"></div>
     </div>
-    <script src="./stations.js"></script>
-    <script src="./index.js"></script>
 </body>
+<script src="./dist/leaflet.markercluster.js"></script>
+<script src="./stations.js"></script>
+                <script>
+                    document.getElementById('legend').innerHTML='Stations-'+stations.length
+                </script>
+<script src="./index.js"></script>
 </html>

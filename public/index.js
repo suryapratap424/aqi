@@ -1,4 +1,3 @@
-
 const myMap = L.map("map").setView([28.5915128, 77.2192949], 10);
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const attribution =
@@ -17,41 +16,40 @@ var bounds = L.latLngBounds(southWest, northEast);
 myMap.setMaxBounds(bounds);
 
 function genPop(station) {
-    return `<h1>${station.name}</h1>
+  return `<h1>${station.name}</h1>
     <h1>${station.lat}</h1><h1>${station.lng}</h1>
     <div id='${station.lat}'></div>
     `;
-  }
+}
 
-  function getOffset(station) {
-    let a = 0,
-      b = 10;
-    if (station.lat > 75) b = 310;
-    if (station.lng < -150) a = 120;
-    if (station.lng > 150) a = -120;
-    return [a, b];
-  }
-  var layer;
-  function showDataOnMap(stations) {
-    let temp = new Array();
-    stations.forEach((station) => {
-      temp.push(
-        L.marker([station.lat, station.lng]).on('click',onclick)
-        .bindPopup(genPop(station), {
-          offset: getOffset(station),
-        })
-      );
-    });
-    if (layer != undefined) {
-      layer.clearLayers(); //reset
-    }
-    layer = L.layerGroup(temp).addTo(myMap);
-  }
-  showDataOnMap(stations)
+function getOffset(station) {
+  let a = 0,
+    b = 10;
+  if (station.lat > 75) b = 310;
+  if (station.lng < -150) a = 120;
+  if (station.lng > 150) a = -120;
+  return [a, b];
+}
+var layer = L.markerClusterGroup();
+function showDataOnMap(stations) {
+  // if (layer != undefined) {
+    layer.clearLayers(); //reset
+  // }
+  stations.forEach((station) => {
+    let p = L.circleMarker([station.lat, station.lng],{fillColor:'red',color:'black',fillOpacity: 0.7})
+      .on("click", onclick)
+      .bindPopup(genPop(station), {
+        offset: getOffset(station),
+      });
+    layer.addLayer(p);
+  });
+  layer.addTo(myMap)
+}
+showDataOnMap(stations);
 //-----------------------------------------------------------------------------
 function filldata(data) {
   list = Object.keys(data.list[0].components);
-  let html=`<p id ='lat'>lat__${data.coord.lat}</p>
+  let html = `<p id ='lat'>lat__${data.coord.lat}</p>
   <p id='lng'>lng__${data.coord.lon}</p>
   <ul id='comp'>
   ${list
@@ -61,24 +59,21 @@ function filldata(data) {
     )
     .join("")}
     </ul>`;
-    document.getElementById('data').innerHTML=html
-    let card = document.getElementById(`${data.coord.lat}`)
-    if(card)
-    card.innerHTML=html
-    // return html
-//   document.getElementById("lat").innerHTML = `lat-${data.coord.lat}`;
-//   document.getElementById("lng").innerHTML = `lng-${data.coord.lon}`;
-//   document.getElementById("comp").innerHTML = list
-//     .map(
-//       (li) =>
-//         `<pre><li>${li}    -->    ${data.list[0].components[li]}</li></pre>`
-//     )
-//     .join("");
+  document.getElementById("data").innerHTML = html;
+  let card = document.getElementById(`${data.coord.lat}`);
+  if (card) card.innerHTML = html;
+  // return html
+  //   document.getElementById("lat").innerHTML = `lat-${data.coord.lat}`;
+  //   document.getElementById("lng").innerHTML = `lng-${data.coord.lon}`;
+  //   document.getElementById("comp").innerHTML = list
+  //     .map(
+  //       (li) =>
+  //         `<pre><li>${li}    -->    ${data.list[0].components[li]}</li></pre>`
+  //     )
+  //     .join("");
 }
 var marker;
-fetch(
-  `data?lat=50&lon=50`
-)
+fetch(`data?lat=50&lon=50`)
   .then((r) => r.json())
   .then((x) => {
     console.log(x);
@@ -89,13 +84,11 @@ function onclick(e) {
   document.getElementById("comp").innerHTML = `Loading....`;
   let lat = e.latlng.lat;
   let lng = e.latlng.lng;
-  if (marker != undefined) {
-    myMap.removeLayer(marker);
-  }
-  marker = L.marker(e.latlng).addTo(myMap);
-  fetch(
-    `data?lat=${lat}&lon=${lng}`
-  )
+  // if (marker != undefined) {
+  //   myMap.removeLayer(marker);
+  // }
+  // marker = L.marker(e.latlng).addTo(myMap);
+  fetch(`data?lat=${lat}&lon=${lng}`)
     .then((r) => r.json())
     .then((x) => {
       console.log(x);
