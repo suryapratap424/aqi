@@ -7,10 +7,11 @@ const axios = require("axios")
 app.use(express.static(path.join(__dirname, 'public')))
 app.get('/data',async(req,res)=>{
     // console.log(req.query)
-    let re = await axios.get(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${req.query.lat}&lon=${req.query.lon}&appid=${process.env.APIKEY}`)
-    .catch(e=>console.log(e))
-    // console.log(re.data)
-    res.send(re.data)
+    axios.get(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${req.query.lat}&lon=${req.query.lon}&appid=${process.env.APIKEY}`)
+    .then(re=>res.send(re.data))
+    .catch(e=>res.send(e))
+    // if(re)
+    // res.send(re.data)
 })
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
