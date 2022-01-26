@@ -2,12 +2,52 @@ const myMap = L.map("map").setView([23, 80], 5);
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const attribution =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-const tileLayer = L.tileLayer(tileUrl, {
+const osm = L.tileLayer(tileUrl, {
   attribution,
   minZoom: 2,
-  noWrap: true,
+  // noWrap: true,
 });
-tileLayer.addTo(myMap);
+osm.addTo(myMap);
+
+const CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  minZoom: 2,
+	// maxZoom: 19
+});
+// CartoDB_DarkMatter.addTo(myMap);
+const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+  minZoom: 2,
+  // maxZoom: 20,
+  subdomains:['mt0','mt1','mt2','mt3']
+});
+//  googleStreets.addTo(myMap);
+
+const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+   minZoom: 2,
+   // maxZoom: 20,
+   subdomains:['mt0','mt1','mt2','mt3']
+  });
+  // googleSat.addTo(myMap);
+  
+  const Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: 'abcd',
+    minZoom: 2,
+// maxZoom: 20,
+ext: 'jpg'
+});
+// Stamen_Watercolor.addTo(myMap);
+
+var baseLayers = {
+  "OpenStreetMap": osm,
+  "Satellite":googleSat,
+  "Google Map":googleStreets,
+  "Water Color":Stamen_Watercolor,
+  "Dark":CartoDB_DarkMatter,
+};
+
+L.control.layers(baseLayers, {}).addTo(myMap);
 
 var southWest = L.latLng(-89.98155760646617, -180),
   northEast = L.latLng(89.99346179538875, 180);
@@ -17,7 +57,6 @@ myMap.setMaxBounds(bounds);
 
 function genPop(station) {
   return `<h1>${station.name}</h1>
-    <h1>${station.lat}</h1><h1>${station.lng}</h1>
     <div id='${station.lat}'></div>
     `;
 }
@@ -33,16 +72,21 @@ function getOffset(station) {
 var layer = L.markerClusterGroup();
 function showDataOnMap(stations) {
   layer.clearLayers(); //reset
+  let count = 0
   stations.forEach((station) => {
     fetch(`data?lat=${station.lat}&lon=${station.lng}`)
       .then((r) => r.json())
       .then((x) => {
+        let b = color(x.list[0].main.aqi)
+        console.log(b)
         // background-color: ${color(x.list[0].main.aqi)};
         // background-color: ${color(x.list[0].main.aqi)};
         let style = `
-        background-color: ${color(x.list[0].main.aqi)};
+        color: ${(b=='yellow'||b=='greenyellow')?'black':'white'};
+        background-color: ${b};
         width:2rem;
         height:2rem;
+        font-size:16px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -60,6 +104,7 @@ function showDataOnMap(stations) {
             offset: getOffset(station),
           });
         layer.addLayer(d);
+        document.getElementById('loaded').innerHTML=`Loaded Stations - ${++count}`
       })
       .catch((e) => (console.log(e)));
   });
@@ -68,23 +113,6 @@ function showDataOnMap(stations) {
 }
 showDataOnMap(stations);
 //-------------------------aqi-------------------------------------------------
-// function color(c){
-//   if(c<=700){
-//     return 'green'
-//   }
-//   if(c<800){
-//     return 'greenyellow'
-//   }
-//   if(c<=850){
-//     return 'yellow'
-//   }
-//   if(c<=900){
-//     return 'orange'
-//   }
-//   if(c>900){
-//     return 'red'
-//   }
-// }
 function color(c){
   if(c==1){
     return 'green'
@@ -104,115 +132,7 @@ function color(c){
 }
 function aqi(d){
   let {pm10,pm2_5} = d
-  // let {pm10,pm2_5,so2,no,no2,co,o3,nh3} = d
-  // co = co / 1000
-  // if(pm10<=50)
-  // pm10=pm10
-  // if(pm10>50&&pm10<=100)
-  // pm10=pm10
-  // if(pm10>100&&pm10<=250)
-  // pm10=100+(pm10-100)*100/150
-  // if(pm10>250&&pm10<=350)
-  // pm10=200+(pm10-250)
-  // if(pm10>350&&pm10<=430)
-  // pm10=300+(pm10-350)*(100/80)
-  // if(pm10>430)
-  // pm10=400+(pm10-430)*(100/80)
-  // //---------------------------------
-  // if(pm2_5<=30)
-  // pm2_5=pm2_5*50/30
-  // if(pm2_5>30&&pm2_5<=60)
-  // pm2_5=50+(pm2_5-30)*50/30
-  // if(pm2_5>60&&pm2_5<=90)
-  // pm2_5=100+(pm2_5-60)*100/30
-  // if(pm2_5>90&&pm2_5<=120)
-  // pm2_5=200+(pm2_5-90)*(100/30)
-  // if(pm2_5>120&&pm2_5<=250)
-  // pm2_5=300+(pm2_5-120)*(100/130)
-  // if(pm2_5>250)
-  // pm2_5=400+(pm2_5-250)*(100/130)
-  // //---------------------------------
-  // if(so2<=40)
-  // so2=so2*50/40
-  // if(so2>40&&so2<=80)
-  // so2=50+(so2-40)*50/40
-  // if(so2>80&&so2<=380)
-  // so2=100+(so2-80)*100/300
-  // if(so2>380&&so2<=800)
-  // so2=200+(so2-380)*(100/420)
-  // if(so2>800&&so2<=1600)
-  // so2=300+(so2-800)*(100/800)
-  // if(so2>1600)
-  // so2=400+(so2-1600)*(100/800)
-  // //---------------------------------
-  // if(no<=40)
-  // no=no*50/40
-  // if(no>40&&no<=80)
-  // no=50+(no-40)*50/40
-  // if(no>80&&no<=180)
-  // no=100+(no-80)*100/100
-  // if(no>180&&no<=280)
-  // no=200+(no-180)*(100/100)
-  // if(no>280&&no<=400)
-  // no=300+(no-280)*(100/120)
-  // if(no>400)
-  // no=400+(no-400)*(100/120)
-  // //---------------------------------
-  // if(no2<=40)
-  // no2=no2*50/40
-  // if(no2>40&&no2<=80)
-  // no2=50+(no2-40)*50/40
-  // if(no2>80&&no2<=180)
-  // no2=100+(no2-80)*100/100
-  // if(no2>180&&no2<=280)
-  // no2=200+(no2-180)*(100/100)
-  // if(no2>280&&no2<=400)
-  // no2=300+(no2-280)*(100/120)
-  // if(no2>400)
-  // no2=400+(no2-400)*(100/120)
-  // //---------------------------------
-  // if(co<=1)
-  // co=co*50/1
-  // if(co>1&&co<=2)
-  // co=50+(co-1)*50/1
-  // if(co>2&&co<=10)
-  // co=100+(co-2)*100/8
-  // if(co>10&&co<=17)
-  // co=200+(co-10)*(100/7)
-  // if(co>17&&co<=34)
-  // co=300+(co-17)*(100/17)
-  // if(co>34)
-  // co=400+(co-34)*(100/17)
-  // //---------------------------------
-  // if(o3<=50)
-  // o3=o3*50/50
-  // if(o3>50&&o3<=100)
-  // o3=50+(o3-50)*50/50
-  // if(o3>100&&o3<=168)
-  // o3=100+(o3-100)*100/68
-  // if(o3>168&&o3<=208)
-  // o3=200+(o3-168)*(100/40)
-  // if(o3>208&&o3<=748)
-  // o3=300+(o3-208)*(100/539)
-  // if(o3>748)
-  // o3=400+(o3-400)*(100/539)
-  // //---------------------------------
-  // if(nh3<=200)
-  // nh3=nh3*50/200
-  // if(nh3>200&&nh3<=400)
-  // nh3=50+(nh3-200)*50/200
-  // if(nh3>400&&nh3<=800)
-  // nh3=100+(nh3-400)*100/400
-  // if(nh3>800&&nh3<=1200)
-  // nh3=200+(nh3-800)*(100/400)
-  // if(nh3>1200&&nh3<=1800)
-  // nh3=300+(nh3-1200)*(100/600)
-  // if(nh3>1800)
-  // nh3=400+(nh3-1800)*(100/600)
-  // //---------------------------------
-  // console.log(pm10,pm2_5,so2,no,no2,co,o3,nh3)
   return Math.round(Math.max(pm10,pm2_5))
-  // return Math.round(Math.max(pm10,pm2_5,so2,no,no2,co,o3,nh3))
 }
         
 //-----------------------------------------------------------------------------

@@ -24,14 +24,23 @@
                 <ul id="comp"></ul>
             </div>
         </div> -->
-        <div id="legend"></div>
+        <div id="legend">
+            <div id="govt"></div>
+            <div id="loaded"></div>
+        </div>
         <div id="map"></div>
     </div>
 </body>
 <script src="./dist/leaflet.markercluster.js"></script>
 <script src="./indiastations.js"></script>
                 <script>
-                    document.getElementById('legend').innerHTML='Stations-'+stations.length
+                    let start = 0;
+                    let counter = setInterval(() => {
+                        start+=1
+                        document.getElementById('govt').innerHTML='Government Stations - '+start
+                        if(stations.length==start)
+                            clearInterval(counter)
+                    }, 50);
                 </script>
 <script src="./index.js"></script>
 </html>

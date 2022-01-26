@@ -194,7 +194,7 @@ const stations = [
   },
   { name: "Phase-1 GIDC, Vapi - GPCB", lat: 20.3617, lng: 72.9179998 },
   { name: "Phase-4 GIDC, Vatva - GPCB", lat: 22.9703, lng: 72.6476 },
-  { name: "Patti Mehar, Ambala - HSPCB", lat: 30.7059, lng: 76.85324 },
+  { name: "Patti Mehar, Ambala - HSPCB", lat: 30.3779, lng: 76.7733 },
   { name: "Arya Nagar, Bahadurgarh - HSPCB", lat: 28.6893, lng: 76.9528502 },
   { name: "Nathu Colony, Ballabgarh - HSPCB", lat: 28.3388, lng: 77.3206 },
   { name: "H.B. Colony, Bhiwani - HSPCB", lat: 28.7975, lng: 76.1322 },
@@ -281,7 +281,7 @@ const stations = [
     lng: 77.646579,
   },
   { name: "Silk Board, Bengaluru - KSPCB", lat: 12.9172, lng: 77.6227728 },
-  { name: "Naubad, Bidar - KSPCB", lat: 17.3370, lng: 76.8478619 },
+  { name: "Naubad, Bidar - KSPCB", lat: 17.9336, lng: 77.4788 },
   { name: "Urban, Chamarajanagar - KSPCB", lat: 11.9265, lng: 76.931125 },
   {
     name: "Chikkaballapur Rural, Chikkaballapur - KSPCB",
