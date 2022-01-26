@@ -77,6 +77,7 @@ function showDataOnMap(stations) {
     fetch(`data?lat=${station.lat}&lon=${station.lng}`)
       .then((r) => r.json())
       .then((x) => {
+        console.log(x)
         let b = color(x.list[0].main.aqi)
         console.log(b)
         // background-color: ${color(x.list[0].main.aqi)};
