@@ -113,6 +113,25 @@ function showDataOnMap(stations) {
   layer.addTo(myMap);
 }
 showDataOnMap(stations);
+//========================================================================
+document.getElementById('option').addEventListener("change",function (){
+  let selected = stations.filter(station=>station.name==this.value)[0]
+  fly(selected)
+  onclick({latlng:{lat:selected.lat,lng:selected.lng}})
+})
+function fly(station) {
+  const lat = station.lat;
+  const lng = station.lng;
+  myMap.flyTo([lat, lng], 15, {
+    duration: 2,
+  });
+  setTimeout(() => {
+    L.popup({ offset: getOffset(station) })
+    .setLatLng([lat, lng])
+    .setContent(genPop(station))
+    .openOn(myMap);
+  }, 2000);
+}
 //-------------------------aqi-------------------------------------------------
 function color(c){
   if(c==1){

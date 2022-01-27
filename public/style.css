@@ -28,9 +28,18 @@
     padding: 1rem;
     position: absolute;
     bottom: 3%;
-    right: 42%;
+    left: 42%;
     border-radius: 1rem;
     color: white;
+}
+#option{
+    padding: 1rem;
+    position: absolute;
+    width: 290px;
+    top: 3%;
+    left: 5%;
+    z-index: 999;
+    border-radius: 0 1rem;
 }
 #comp {
     text-transform: uppercase;

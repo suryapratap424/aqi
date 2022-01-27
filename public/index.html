@@ -17,13 +17,9 @@
 
 <body>
     <div id="container">
-        <!-- <div id='side'>
-            <div id="data">
-                <p id="lat"></p>
-                <p id="lng"></p>
-                <ul id="comp"></ul>
-            </div>
-        </div> -->
+        <input list='list' id="option">
+        <datalist id="list">
+        </datalist>
         <div id="legend">
             <div id="govt"></div>
             <div id="loaded"></div>
@@ -41,6 +37,8 @@
                         if(stations.length==start)
                             clearInterval(counter)
                     }, 50);
+                    let list = document.getElementById('list')
+                    list.innerHTML = stations.map(station=>`<option value='${station.name}'>`).join('')
                 </script>
 <script src="./index.js"></script>
 </html>
