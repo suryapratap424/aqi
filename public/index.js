@@ -9,42 +9,56 @@ const osm = L.tileLayer(tileUrl, {
 });
 osm.addTo(myMap);
 
-const CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-  subdomains: 'abcd',
-  minZoom: 2,
-	// maxZoom: 19
-});
+const CartoDB_DarkMatter = L.tileLayer(
+  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+  {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd",
+    minZoom: 2,
+    // maxZoom: 19
+  }
+);
 // CartoDB_DarkMatter.addTo(myMap);
-const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-  minZoom: 2,
-  // maxZoom: 20,
-  subdomains:['mt0','mt1','mt2','mt3']
-});
+const googleStreets = L.tileLayer(
+  "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+  {
+    minZoom: 2,
+    // maxZoom: 20,
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+  }
+);
 //  googleStreets.addTo(myMap);
 
-const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-   minZoom: 2,
-   // maxZoom: 20,
-   subdomains:['mt0','mt1','mt2','mt3']
-  });
-  // googleSat.addTo(myMap);
-  
-  const Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    subdomains: 'abcd',
+const googleSat = L.tileLayer(
+  "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+  {
     minZoom: 2,
-// maxZoom: 20,
-ext: 'jpg'
-});
+    // maxZoom: 20,
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+  }
+);
+// googleSat.addTo(myMap);
+
+const Stamen_Watercolor = L.tileLayer(
+  "https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}",
+  {
+    attribution:
+      'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: "abcd",
+    minZoom: 2,
+    // maxZoom: 20,
+    ext: "jpg",
+  }
+);
 // Stamen_Watercolor.addTo(myMap);
 
 var baseLayers = {
-  "OpenStreetMap": osm,
-  "Satellite":googleSat,
-  "Google Map":googleStreets,
-  "Water Color":Stamen_Watercolor,
-  "Dark":CartoDB_DarkMatter,
+  OpenStreetMap: osm,
+  Satellite: googleSat,
+  "Google Map": googleStreets,
+  "Water Color": Stamen_Watercolor,
+  Dark: CartoDB_DarkMatter,
 };
 
 L.control.layers(baseLayers, {}).addTo(myMap);
@@ -56,8 +70,16 @@ var bounds = L.latLngBounds(southWest, northEast);
 myMap.setMaxBounds(bounds);
 
 function genPop(station) {
-  return `<h1>${station.name}</h1>
+  return `<p>coords:${station.lat},${station.lng}</p>
+  <h2 class='heading'>${station.name}</h2>
     <div id='${station.lat}'></div>
+    <div class='bottom'>
+    <span class='green'></span>
+    <span>GOOD</span>
+    <span class='yellow'></span>
+    <span>MEDIUM</span>
+    <span class='red'></span>
+    <span>BAD</span></div>
     `;
 }
 
@@ -72,18 +94,18 @@ function getOffset(station) {
 var layer = L.markerClusterGroup();
 function showDataOnMap(stations) {
   layer.clearLayers(); //reset
-  let count = 0
+  let count = 0;
   stations.forEach((station) => {
     fetch(`data?lat=${station.lat}&lon=${station.lng}`)
       .then((r) => r.json())
       .then((x) => {
-        console.log(x)
-        let b = color(x.list[0].main.aqi)
-        console.log(b)
+        // console.log(x)
+        let b = color(x.list[0].main.aqi);
+        // console.log(b)
         // background-color: ${color(x.list[0].main.aqi)};
         // background-color: ${color(x.list[0].main.aqi)};
         let style = `
-        color: ${(b=='yellow'||b=='greenyellow')?'black':'white'};
+        color: ${b == "yellow" || b == "greenyellow" ? "black" : "white"};
         background-color: ${b};
         width:2rem;
         height:2rem;
@@ -92,33 +114,33 @@ function showDataOnMap(stations) {
         align-items: center;
         justify-content: center;
         border-radius: 1rem;
-        border: 2px solid black;`
+        border: 2px solid black;`;
         let icon = L.divIcon({
           className: "Circle",
-          html: `<div style='${style}'>${
-            aqi(x.list[0].components)
-          }</div>`,
+          html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`,
         });
-       let d = L.marker([station.lat, station.lng], { icon })
+        let d = L.marker([station.lat, station.lng], { icon })
           .on("click", onclick)
           .bindPopup(genPop(station), {
             offset: getOffset(station),
           });
         layer.addLayer(d);
-        document.getElementById('loaded').innerHTML=`Loaded Stations - ${++count}`
+        document.getElementById(
+          "loaded"
+        ).innerHTML = `Loaded Stations - ${++count}`;
       })
-      .catch((e) => (console.log(e)));
+      .catch((e) => console.log(e));
   });
 
   layer.addTo(myMap);
 }
 showDataOnMap(stations);
 //========================================================================
-document.getElementById('option').addEventListener("change",function (){
-  let selected = stations.filter(station=>station.name==this.value)[0]
-  fly(selected)
-  onclick({latlng:{lat:selected.lat,lng:selected.lng}})
-})
+document.getElementById("option").addEventListener("change", function () {
+  let selected = stations.filter((station) => station.name == this.value)[0];
+  fly(selected);
+  onclick({ latlng: { lat: selected.lat, lng: selected.lng } });
+});
 function fly(station) {
   const lat = station.lat;
   const lng = station.lng;
@@ -127,47 +149,94 @@ function fly(station) {
   });
   setTimeout(() => {
     L.popup({ offset: getOffset(station) })
-    .setLatLng([lat, lng])
-    .setContent(genPop(station))
-    .openOn(myMap);
+      .setLatLng([lat, lng])
+      .setContent(genPop(station))
+      .openOn(myMap);
   }, 2000);
 }
 //-------------------------aqi-------------------------------------------------
-function color(c){
-  if(c==1){
+function color(c) {
+  if (c == 1) {
+    return "green";
+  }
+  if (c == 2) {
+    return "greenyellow";
+  }
+  if (c == 3) {
+    return "yellow";
+  }
+  if (c == 4) {
+    return "orange";
+  }
+  if (c == 5) {
+    return "red";
+  }
+}
+function colorclass(Pname, Pvalue) {
+  let up, low;
+  if (Pname == "co") {
+    low = 2000;
+    up = 17000;
+  }
+  if (Pname == "no") {
+    low = 80;
+    up = 280;
+  }
+  if (Pname == "no2") {
+    low = 80;
+    up = 280;
+  }
+  if (Pname == "o3") {
+    low = 100;
+    up = 208;
+  }
+  if (Pname == "so2") {
+    low = 80;
+    up = 800;
+  }
+  if (Pname == "pm_25") {
+    low = 60;
+    up = 120;
+  }
+  if (Pname == "pm10") {
+    low = 50;
+    up = 100;
+  }
+  if (Pname == "nh3") {
+    low = 400;
+    up = 1200;
+  }
+  if(Pvalue<low){
     return 'green'
-  }
-  if(c==2){
-    return 'greenyellow'
-  }
-  if(c==3){
+  } else if(Pvalue>up){
+    return 'red'
+  } else{
     return 'yellow'
   }
-  if(c==4){
-    return 'orange'
-  }
-  if(c==5){
-    return 'red'
-  }
+  // console.log(Pname, Pvalue);
 }
-function aqi(d){
-  let {pm10,pm2_5} = d
-  return Math.round(Math.max(pm10,pm2_5))
+function aqi(d) {
+  let { pm10, pm2_5 } = d;
+  return Math.round(Math.max(pm10, pm2_5));
 }
-        
+
 //-----------------------------------------------------------------------------
 function filldata(data) {
   list = Object.keys(data.list[0].components);
-  let html = `<p id ='lat'>lat__${data.coord.lat}</p>
-  <p id='lng'>lng__${data.coord.lon}</p>
-  <ul id='comp'>
+  let html = `
+  <div class='comp'>
   ${list
     .map(
       (li) =>
-        `<pre><li>${li}    -->    ${data.list[0].components[li]}</li></pre>`
+        `<span>${li}</span><span class="vals">${
+          data.list[0].components[li]
+        }</span><span class='${colorclass(
+          li,
+          data.list[0].components[li]
+        )}'></span>`
     )
     .join("")}
-    </ul>`;
+    </div>`;
   // document.getElementById("data").innerHTML = html;
   let card = document.getElementById(`${data.coord.lat}`);
   if (card) card.innerHTML = html;
