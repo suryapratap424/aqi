@@ -1,4 +1,4 @@
-const stations = [
+let stations = [
   { name: "Secretariat, Amaravati - APPCB", lat: 16.5042, lng: 80.5142741 },
   {
     name: "Anand Kala Kshetram, Rajamahendravaram - APPCB",

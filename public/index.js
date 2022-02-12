@@ -95,17 +95,15 @@ var layer = L.markerClusterGroup();
 function showDataOnMap(stations) {
   layer.clearLayers(); //reset
   let count = 0;
-  stations.forEach((station) => {
-    fetch(`data?lat=${station.lat}&lon=${station.lng}`)
+  let arrofpromis = stations.map((station) => {
+    let one = fetch(`data?lat=${station.lat}&lon=${station.lng}`)
       .then((r) => r.json())
       .then((x) => {
-        // console.log(x)
-        let b = color(x.list[0].main.aqi);
-        // console.log(b)
-        // background-color: ${color(x.list[0].main.aqi)};
-        // background-color: ${color(x.list[0].main.aqi)};
+        // let b = color(x.list[0].main.aqi);
+        let b = color(x.list[0].components.pm10);
+        station.color = b;
         let style = `
-        color: ${b == "yellow" || b == "greenyellow" ? "black" : "white"};
+        color: ${b == "yellow" || b == "#70b900" ? "black" : "white"};
         background-color: ${b};
         width:2rem;
         height:2rem;
@@ -128,13 +126,47 @@ function showDataOnMap(stations) {
         document.getElementById(
           "loaded"
         ).innerHTML = `Loaded Stations - ${++count}`;
+        return station;
       })
-      .catch((e) => console.log(e));
+      .catch((e) => undefined);
+    if (one) return one;
   });
-
+  console.log(arrofpromis);
   layer.addTo(myMap);
+  return Promise.all(arrofpromis);
 }
-showDataOnMap(stations);
+showDataOnMap(stations).then((stations) => {
+  function checknear([lng, lat]) {
+    let neareststation = {};
+    let nearest = Infinity;
+    // console.log(lat,lng)
+    for (let i = 0; i < stations.length; i++) {
+      if (stations[i]) {
+        const [Mlat, Mlng] = [stations[i].lat, stations[i].lng];
+        let distance =
+          (lat - Mlat) * (lat - Mlat) + (lng - Mlng) * (lng - Mlng);
+        if (distance < nearest) {
+          nearest = distance;
+          neareststation = stations[i];
+        }
+      }
+    }
+    return neareststation;
+  }
+  fetch("./roads.geojson")
+    .then((res) => res.json())
+    .then((x) => {
+      // L.geoJSON(x).addTo(myMap)
+      x.features.forEach((element) => {
+        // console.log(element)
+        let station = checknear(element.geometry.coordinates[0]);
+        L.geoJSON(element, { style: { color: station.color } })
+          .bindPopup(JSON.stringify(station))
+          .addTo(myMap);
+      });
+    });
+});
+//==============================roads=====================================
 //========================================================================
 document.getElementById("option").addEventListener("change", function () {
   let selected = stations.filter((station) => station.name == this.value)[0];
@@ -156,21 +188,36 @@ function fly(station) {
 }
 //-------------------------aqi-------------------------------------------------
 function color(c) {
-  if (c == 1) {
+  if (c < 175) {
     return "green";
   }
-  if (c == 2) {
-    return "greenyellow";
+  if (c < 200) {
+    return "#70b900";
   }
-  if (c == 3) {
+  if (c < 250) {
     return "yellow";
   }
-  if (c == 4) {
+  if (c < 300) {
     return "orange";
   }
-  if (c == 5) {
+  if (c > 400) {
     return "red";
   }
+  // if (c == 1) {
+  //   return "green";
+  // }
+  // if (c == 2) {
+  //   return "greenyellow";
+  // }
+  // if (c == 3) {
+  //   return "yellow";
+  // }
+  // if (c == 4) {
+  //   return "orange";
+  // }
+  // if (c == 5) {
+  //   return "red";
+  // }
 }
 function colorclass(Pname, Pvalue) {
   let up, low;
@@ -206,12 +253,12 @@ function colorclass(Pname, Pvalue) {
     low = 400;
     up = 1200;
   }
-  if(Pvalue<low){
-    return 'green'
-  } else if(Pvalue>up){
-    return 'red'
-  } else{
-    return 'yellow'
+  if (Pvalue < low) {
+    return "green";
+  } else if (Pvalue > up) {
+    return "red";
+  } else {
+    return "yellow";
   }
   // console.log(Pname, Pvalue);
 }
