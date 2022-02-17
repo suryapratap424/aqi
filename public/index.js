@@ -95,13 +95,14 @@ var layer = L.markerClusterGroup();
 function showDataOnMap(stations) {
   layer.clearLayers(); //reset
   let count = 0;
-  let arrofpromis = stations.map((station) => {
-    let one = fetch(`data?lat=${station.lat}&lon=${station.lng}`)
+  // console.log(stations)
+ /* let arrofpromis = */stations.forEach((station) => {
+    /*let one = */fetch(`data?lat=${station.lat}&lon=${station.lng}`)
       .then((r) => r.json())
       .then((x) => {
         // let b = color(x.list[0].main.aqi);
         let b = color(x.list[0].components.pm10);
-        station.color = b;
+        // station.color = b;
         let style = `
         color: ${b == "yellow" || b == "#70b900" ? "black" : "white"};
         background-color: ${b};
@@ -113,60 +114,56 @@ function showDataOnMap(stations) {
         justify-content: center;
         border-radius: 1rem;
         border: 2px solid black;`;
-        let icon = L.divIcon({
-          className: "Circle",
-          html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`,
-        });
-        let d = L.marker([station.lat, station.lng], { icon })
-          .on("click", onclick)
-          .bindPopup(genPop(station), {
+        let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
+        let d = L.marker([station.lat, station.lng], { icon }).on("click", onclick).bindPopup(genPop(station), {
             offset: getOffset(station),
           });
         layer.addLayer(d);
         document.getElementById(
           "loaded"
         ).innerHTML = `Loaded Stations - ${++count}`;
-        return station;
+        // return station;
       })
-      .catch((e) => undefined);
-    if (one) return one;
+      .catch((e) => console.log(e.message));
+    // if (one) return one;
   });
-  console.log(arrofpromis);
+  // console.log(arrofpromis);
   layer.addTo(myMap);
-  return Promise.all(arrofpromis);
+  // return Promise.all(arrofpromis);
 }
-showDataOnMap(stations).then((stations) => {
-  function checknear([lng, lat]) {
-    let neareststation = {};
-    let nearest = Infinity;
-    // console.log(lat,lng)
-    for (let i = 0; i < stations.length; i++) {
-      if (stations[i]) {
-        const [Mlat, Mlng] = [stations[i].lat, stations[i].lng];
-        let distance =
-          (lat - Mlat) * (lat - Mlat) + (lng - Mlng) * (lng - Mlng);
-        if (distance < nearest) {
-          nearest = distance;
-          neareststation = stations[i];
-        }
-      }
-    }
-    return neareststation;
-  }
-  fetch("./roads.geojson")
-    .then((res) => res.json())
-    .then((x) => {
-      // L.geoJSON(x).addTo(myMap)
-      x.features.forEach((element) => {
-        // console.log(element)
-        let station = checknear(element.geometry.coordinates[0]);
-        L.geoJSON(element, { style: { color: station.color } })
-          .bindPopup(JSON.stringify(station))
-          .addTo(myMap);
-      });
-    });
-});
+showDataOnMap(stations)
 //==============================roads=====================================
+// showDataOnMap(stations).then((stations) => {
+//   function checknear([lng, lat]) {
+//     let neareststation = {};
+//     let nearest = Infinity;
+//     // console.log(lat,lng)
+//     for (let i = 0; i < stations.length; i++) {
+//       if (stations[i]) {
+//         const [Mlat, Mlng] = [stations[i].lat, stations[i].lng];
+//         let distance =
+//           (lat - Mlat) * (lat - Mlat) + (lng - Mlng) * (lng - Mlng);
+//         if (distance < nearest) {
+//           nearest = distance;
+//           neareststation = stations[i];
+//         }
+//       }
+//     }
+//     return neareststation;
+//   }
+//   fetch("./roads.geojson")
+//     .then((res) => res.json())
+//     .then((x) => {
+//       // L.geoJSON(x).addTo(myMap)
+//       x.features.forEach((element) => {
+//         // console.log(element)
+//         let station = checknear(element.geometry.coordinates[0]);
+//         L.geoJSON(element, { style: { color: station.color } })
+//           .bindPopup(JSON.stringify(station))
+//           .addTo(myMap);
+//       });
+//     });
+// });
 //========================================================================
 document.getElementById("option").addEventListener("change", function () {
   let selected = stations.filter((station) => station.name == this.value)[0];
@@ -197,7 +194,7 @@ function color(c) {
   if (c < 250) {
     return "yellow";
   }
-  if (c < 300) {
+  if (c < 400) {
     return "orange";
   }
   if (c > 400) {

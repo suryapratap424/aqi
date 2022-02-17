@@ -4,6 +4,14 @@ const app = express()
 const path = require('path')
 const port = process.env.PORT||80;
 const axios = require("axios")
+const cors = require("cors");
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  })
+);
+app.options("*", cors());
 app.use(express.static(path.join(__dirname, 'public')))
 app.get('/data',async(req,res)=>{
     // console.log(req.query)
