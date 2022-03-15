@@ -7,7 +7,7 @@ const osm = L.tileLayer(tileUrl, {
   minZoom: 2,
   // noWrap: true,
 });
-osm.addTo(myMap);
+// osm.addTo(myMap);
 
 const CartoDB_DarkMatter = L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
@@ -19,7 +19,7 @@ const CartoDB_DarkMatter = L.tileLayer(
     // maxZoom: 19
   }
 );
-// CartoDB_DarkMatter.addTo(myMap);
+CartoDB_DarkMatter.addTo(myMap);
 const googleStreets = L.tileLayer(
   "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
   {
@@ -104,17 +104,10 @@ function showDataOnMap(stations) {
         let b = color(x.list[0].components.pm10);
         // station.color = b;
         let style = `
-        color: ${b == "yellow" || b == "#70b900" ? "black" : "white"};
-        background-color: ${b};
-        width:2rem;
-        height:2rem;
-        font-size:16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 1rem;
-        border: 2px solid black;`;
-        let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
+        color: ${b};
+        background-color: ${b};`;
+        // let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
+        let icon = L.divIcon({className: "Circle",html: `<div style='${style}'></div>`});
         let d = L.marker([station.lat, station.lng], { icon }).on("click", onclick).bindPopup(genPop(station), {
             offset: getOffset(station),
           });
@@ -192,7 +185,7 @@ function color(c) {
     return "#70b900";
   }
   if (c < 250) {
-    return "yellow";
+    return "#ffeb3b";
   }
   if (c < 400) {
     return "orange";
