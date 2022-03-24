@@ -22,6 +22,24 @@
     width: 100%;
     height: 100vh;
 }
+#filter{
+    z-index: 999;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    background-color: #006b2e;
+}
+#filter>input{
+    display: none;
+}
+#filter>label{
+    display: inline-block;
+    padding: 1rem;
+}
+input[name='filter']:checked+label{
+    background-color: aqua;
+    color: black;
+}
 #legend{
     background-color: #006b2e;
     z-index: 999;

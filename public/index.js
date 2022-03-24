@@ -126,9 +126,18 @@ function showDataOnMap(stations) {
   });
   layer.addTo(myMap);
 }
-showDataOnMap(stations);
+Array.from(document.getElementsByName('filter')).forEach(e=>{
+  e.addEventListener('change',()=>{
+    let state =  document.querySelector("input[name='filter']:checked").id;
+    state=state.replace('_',' ')
+    myMap.flyToBounds((bboxes.find(e=>e.ST_NM==state)).bbox)
+    let filtered = stations.filter(e=>state=='All India'?true:e.state==state)
+    showDataOnMap(filtered);
+    startcounter(filtered);
+})
+})
 document.getElementById("option").addEventListener("change", function () {
-  let selected = stations.filter((station) => station.name == this.value)[0];
+  let selected = stations.find((station) => station.name == this.value);
   fly(selected);
   onclick({ latlng: { lat: selected.lat, lng: selected.lng } });
 });
@@ -162,21 +171,6 @@ function color(c) {
   if (c > 400) {
     return "red";
   }
-  // if (c == 1) {
-  //   return "green";
-  // }
-  // if (c == 2) {
-  //   return "greenyellow";
-  // }
-  // if (c == 3) {
-  //   return "yellow";
-  // }
-  // if (c == 4) {
-  //   return "orange";
-  // }
-  // if (c == 5) {
-  //   return "red";
-  // }
 }
 function colorclass(Pname, Pvalue) {
   let up, low;
@@ -219,7 +213,6 @@ function colorclass(Pname, Pvalue) {
   } else {
     return "yellow";
   }
-  // console.log(Pname, Pvalue);
 }
 function aqi(d) {
   let { pm10, pm2_5 } = d;
@@ -247,13 +240,6 @@ function filldata(data) {
   let card = document.getElementById(`${data.coord.lat}`);
   if (card) card.innerHTML = html;
 }
-fetch(`data?lat=50&lon=50`)
-  .then((r) => r.json())
-  .then((x) => {
-    console.log(x);
-    filldata(x);
-  })
-  .catch((e) => (document.getElementById("comp").innerHTML = e));
 
 function onclick(e) {
   // document.getElementById("comp").innerHTML = `Loading....`;
