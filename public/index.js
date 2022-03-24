@@ -126,16 +126,39 @@ function showDataOnMap(stations) {
   });
   layer.addTo(myMap);
 }
-Array.from(document.getElementsByName('filter')).forEach(e=>{
-  e.addEventListener('change',()=>{
-    let state =  document.querySelector("input[name='filter']:checked").id;
-    state=state.replace('_',' ')
-    myMap.flyToBounds((bboxes.find(e=>e.ST_NM==state)).bbox)
-    let filtered = stations.filter(e=>state=='All India'?true:e.state==state)
-    showDataOnMap(filtered);
-    startcounter(filtered);
-})
-})
+document.getElementById("Delhi").checked = true;
+// let state = document.querySelector("input[name='filter']:checked").id;
+// state = state.replace("_", " ");
+// myMap.flyToBounds(bboxes.find((e) => e.ST_NM == "Delhi").bbox);
+// let filtered = stations.filter((e) => e.state == "Delhi");
+// showDataOnMap(filtered);
+// startcounter(filtered);
+// let list = document.getElementById("list");
+// list.innerHTML = "";
+// list.innerHTML = filtered
+//   .map((station) => `<option value='${station.name}'>`)
+//   .join("");
+setmap('Delhi')
+Array.from(document.getElementsByName("filter")).forEach((e) => {
+  e.addEventListener("change", () => {
+    let state = document.querySelector("input[name='filter']:checked").id;
+    state = state.replace("_", " ");
+    setmap(state)
+  });
+});
+function setmap(state){
+  myMap.flyToBounds(bboxes.find((e) => e.ST_NM == state).bbox);
+  let filtered = stations.filter((e) =>
+    state == "All India" ? true : e.state == state
+  );
+  showDataOnMap(filtered);
+  startcounter(filtered);
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+  list.innerHTML = filtered
+    .map((station) => `<option value='${station.name}'>`)
+    .join("");
+}
 document.getElementById("option").addEventListener("change", function () {
   let selected = stations.find((station) => station.name == this.value);
   fly(selected);
