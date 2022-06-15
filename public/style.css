@@ -26,29 +26,37 @@
   z-index: 999;
   position: absolute;
   top: 0%;
-  left: 50%;
-  background-color: #006b2e;
+  left: 40%;
+  padding: 0.8rem;
+  color: white;
+  background-color: black;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0px 0px 10px 2px yellow;
 }
 #filter > input {
   display: none;
 }
 #filter > label {
+  transition: 1s;
   display: inline-block;
-  padding: 1rem;
+  padding: 0.2rem;
+  margin: 0.3rem;
 }
 input[name="filter"]:checked + label {
-  background-color: aqua;
-  color: black;
+  color: yellow;
+  border-bottom: 2px solid yellow;
+  font-size: large;
 }
 #legend {
-  background-color: #006b2e;
   z-index: 999;
   padding: 1rem;
   position: absolute;
   bottom: 3%;
-  left: 42%;
+  left: 46%;
   border-radius: 1rem;
   color: white;
+  background-color: black;
+  box-shadow: 0px 0px 10px 2px yellow;
 }
 #option {
   padding: 1rem;
