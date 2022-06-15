@@ -72,7 +72,9 @@ myMap.setMaxBounds(bounds);
 function genPop(station) {
   return `<p>coords:${station.lat},${station.lng}</p>
   <h2 class='heading'>${station.name}</h2>
-    <div id='${station.lat}'></div>
+    <div id='${station.lat.toFixed(4)}'>
+    <div class='loader'></div>
+    </div>
     <div class='bottom'>
     <span class='green'></span>
     <span>GOOD</span>
@@ -179,20 +181,23 @@ function fly(station) {
 }
 //-------------------------aqi-------------------------------------------------
 function color(c) {
-  if (c < 50) {
+  if (c < 10) {
     return "green";
   }
-  if (c < 100) {
+  if (c < 20) {
     return "#70b900";
   }
-  if (c < 250) {
+  if (c < 30) {
     return "#ffeb3b";
   }
-  if (c < 400) {
+  if (c < 40) {
     return "orange";
   }
-  if (c > 400) {
+  if (c > 40) {
     return "red";
+  }
+  if(c=='jt'){
+    return "blue";
   }
 }
 function colorclass(Pname, Pvalue) {
@@ -237,13 +242,10 @@ function colorclass(Pname, Pvalue) {
     return "yellow";
   }
 }
-function aqi(d) {
-  let { pm10, pm2_5 } = d;
-  return Math.round(Math.max(pm10, pm2_5));
-}
 
 //-----------------------------------------------------------------------------
 function filldata(data) {
+  setTimeout(()=>{},2000)
   list = Object.keys(data.list[0].components);
   let html = `
   <div class='comp'>
@@ -255,12 +257,15 @@ function filldata(data) {
         }</span><span class='${colorclass(
           li,
           data.list[0].components[li]
-        )}'></span>`
+          )}'></span>`
     )
     .join("")}
     </div>`;
-  // document.getElementById("data").innerHTML = html;
-  let card = document.getElementById(`${data.coord.lat}`);
+    // document.getElementById("data").innerHTML = html;
+    let id = data.coord.lat.toFixed(4)+''
+    let card = document.getElementById(id);
+    console.log(id)
+    console.log(card)
   if (card) card.innerHTML = html;
 }
 
@@ -276,3 +281,25 @@ function onclick(e) {
     })
     .catch((e) => console.log(e));
 }
+fetch("https://jt-stationsapi.herokuapp.com/").then(r=>r.json())
+.then(x=>{
+  x.forEach(station=>{
+    let { PM25 } = station.list[0].components;
+    let b = color('jt');
+    // station.color = b;
+    let style = `
+    color: ${b};
+    background-color: ${b};`;
+    // let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
+    let icon = L.divIcon({
+      className: "Circle",
+      html: `<div style='${style}'></div>`,
+    });
+    station.coord = {lat:station.lat,lng: station.lng}
+    let d = L.marker([station.lat, station.lng], { icon })
+    .bindPopup(genPop(station), {
+      offset: getOffset(station),
+    }).on("click", ()=>filldata(station))
+    layer.addLayer(d);
+  })
+})
