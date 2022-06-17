@@ -63,8 +63,8 @@ var baseLayers = {
 
 L.control.layers(baseLayers, {}).addTo(myMap);
 
-var southWest = L.latLng(-89.98155760646617, -180),
-  northEast = L.latLng(89.99346179538875, 180);
+var southWest = L.latLng(-90, -180),
+  northEast = L.latLng(90, 180);
 var bounds = L.latLngBounds(southWest, northEast);
 
 myMap.setMaxBounds(bounds);
@@ -140,26 +140,35 @@ document.getElementById("Delhi").checked = true;
 // list.innerHTML = filtered
 //   .map((station) => `<option value='${station.name}'>`)
 //   .join("");
-setmap('Delhi')
+setmap("Delhi");
 Array.from(document.getElementsByName("filter")).forEach((e) => {
   e.addEventListener("change", () => {
     let state = document.querySelector("input[name='filter']:checked").id;
     state = state.replace("_", " ");
-    setmap(state)
+    setmap(state);
   });
 });
-function setmap(state){
-  myMap.flyToBounds(bboxes.find((e) => e.ST_NM == state).bbox);
-  let filtered = stations.filter((e) =>
-    state == "All India" ? true : e.state == state
-  );
-  showDataOnMap(filtered);
-  startcounter(filtered);
-  let list = document.getElementById("list");
-  list.innerHTML = "";
-  list.innerHTML = filtered
-    .map((station) => `<option value='${station.name}'>`)
-    .join("");
+function setmap(state) {
+  document.getElementById("govt").innerHTML=''
+  document.getElementById("loaded").innerHTML=''
+  document.getElementById("jtstations").innerHTML=''
+  if (state == "Our") {
+    layer.clearLayers();
+    myMap.flyToBounds(bboxes.find((e) => e.ST_NM == "Delhi").bbox);
+    loadOur();
+  } else {
+    myMap.flyToBounds(bboxes.find((e) => e.ST_NM == state).bbox);
+    let filtered = stations.filter((e) =>
+      state == "All India" ? true : e.state == state
+    );
+    showDataOnMap(filtered);
+    startcounter(filtered);
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+    list.innerHTML = filtered
+      .map((station) => `<option value='${station.name}'>`)
+      .join("");
+  }
 }
 document.getElementById("option").addEventListener("change", function () {
   let selected = stations.find((station) => station.name == this.value);
@@ -196,7 +205,7 @@ function color(c) {
   if (c > 40) {
     return "red";
   }
-  if(c=='jt'){
+  if (c == "jt") {
     return "blue";
   }
 }
@@ -245,7 +254,6 @@ function colorclass(Pname, Pvalue) {
 
 //-----------------------------------------------------------------------------
 function filldata(data) {
-  setTimeout(()=>{},2000)
   list = Object.keys(data.list[0].components);
   let html = `
   <div class='comp'>
@@ -257,15 +265,15 @@ function filldata(data) {
         }</span><span class='${colorclass(
           li,
           data.list[0].components[li]
-          )}'></span>`
+        )}'></span>`
     )
     .join("")}
     </div>`;
-    // document.getElementById("data").innerHTML = html;
-    let id = data.coord.lat.toFixed(4)+''
-    let card = document.getElementById(id);
-    console.log(id)
-    console.log(card)
+  // document.getElementById("data").innerHTML = html;
+  let id = data.coord.lat.toFixed(4) + "";
+  let card = document.getElementById(id);
+  console.log(id);
+  console.log(card);
   if (card) card.innerHTML = html;
 }
 
@@ -281,25 +289,37 @@ function onclick(e) {
     })
     .catch((e) => console.log(e));
 }
-fetch("https://jt-stationsapi.herokuapp.com/").then(r=>r.json())
-.then(x=>{
-  x.forEach(station=>{
-    let { PM25 } = station.list[0].components;
-    let b = color('jt');
-    // station.color = b;
-    let style = `
+function loadOur() {
+  fetch("https://jt-stationsapi.herokuapp.com/")
+    .then((r) => r.json())
+    .then((x) => {
+      let start = 0;
+      let counter = setInterval(() => {
+        start += 1;
+        document.getElementById("jtstations").innerHTML =
+          "Our Stations - " + start;
+        if (x.length == start) clearInterval(counter);
+      }, 5);
+      x.forEach((station) => {
+        let { PM25 } = station.list[0].components;
+        let b = color("jt");
+        // station.color = b;
+        let style = `
     color: ${b};
     background-color: ${b};`;
-    // let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
-    let icon = L.divIcon({
-      className: "Circle",
-      html: `<div style='${style}'></div>`,
+        // let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
+        let icon = L.divIcon({
+          className: "Circle",
+          html: `<div style='${style}'></div>`,
+        });
+        station.coord = { lat: station.lat, lng: station.lng };
+        let d = L.marker([station.lat, station.lng], { icon })
+          .bindPopup(genPop(station), {
+            offset: getOffset(station),
+          })
+          .on("click", () => filldata(station));
+        layer.addLayer(d);
+      });
     });
-    station.coord = {lat:station.lat,lng: station.lng}
-    let d = L.marker([station.lat, station.lng], { icon })
-    .bindPopup(genPop(station), {
-      offset: getOffset(station),
-    }).on("click", ()=>filldata(station))
-    layer.addLayer(d);
-  })
-})
+}
+loadOur();
