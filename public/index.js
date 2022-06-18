@@ -19,5 +19,3 @@ document.getElementById("option").addEventListener("change", function () {
   fly(selected);
   onclick({ latlng: { lat: selected.lat, lng: selected.lng } });
 });
-
-loadOur();
