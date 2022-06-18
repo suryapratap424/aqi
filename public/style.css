@@ -11,32 +11,31 @@
   flex-direction: row;
 }
 
-/* #side {
-    width: 25%;
-    height: 100vh;
-    display: inline;
-    border: 3px solid black;
-} */
+.ontop {
+  z-index: 999;
+  position: absolute;
+  padding: 1rem;
+}
 
 #map {
   width: 100%;
   height: 100vh;
 }
-#filter {
-  z-index: 999;
-  position: absolute;
-  top: 0%;
-  left: 40%;
-  padding: 0.8rem;
+.box{
   color: white;
   background-color: black;
   border-radius: 0 0 15px 15px;
   box-shadow: 0px 0px 10px 2px yellow;
 }
-#filter > input {
+#filter {
+  top: 0%;
+  left: 40%;
+  padding: 0.8rem;
+}
+.box > input {
   display: none;
 }
-#filter > label {
+.box > label {
   transition: 1s;
   display: inline-block;
   padding: 0.2rem;
@@ -47,24 +46,27 @@ input[name="filter"]:checked + label {
   border-bottom: 2px solid yellow;
   font-size: large;
 }
+input[name="type"]:checked + label {
+  color: yellow;
+  border-bottom: 2px solid yellow;
+  font-size: large;
+}
+#type{
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 15px 15px 0;
+}
 #legend {
-  z-index: 999;
-  padding: 1rem;
-  position: absolute;
   bottom: 3%;
   left: 46%;
   border-radius: 1rem;
-  color: white;
-  background-color: black;
-  box-shadow: 0px 0px 10px 2px yellow;
 }
 #option {
-  padding: 1rem;
-  position: absolute;
   width: 290px;
   top: 3%;
   left: 5%;
-  z-index: 999;
   border-radius: 0 1rem;
 }
 .comp {
@@ -90,25 +92,21 @@ input[name="filter"]:checked + label {
   text-align: right;
   margin-right: 1rem;
 }
-.green {
-  background-color: #00ec00;
+.vals + span {
   width: 10px;
   height: 10px;
   border-radius: 5px;
+}
+.green {
+  background-color: #00ec00;
   box-shadow: 0px 0px 10px 2px lime;
 }
 .yellow {
   background-color: yellow;
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
   box-shadow: 0px 0px 10px 2px yellow;
 }
 .red {
   background-color: red;
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
   box-shadow: 0px 0px 10px 2px red;
 }
 .card {
@@ -119,7 +117,9 @@ input[name="filter"]:checked + label {
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
-  /* margin: 1rem; */
+}
+.bottom .vals {
+  margin: 0%;
 }
 .Circle > div {
   width: 0.9rem;
@@ -150,11 +150,11 @@ input[name="filter"]:checked + label {
   }
 }
 .loader {
-    border: 12px solid #f3f3f3;
-    border-top: 12px solid #000000;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    margin: 1rem auto;
-    animation: spin 1s linear infinite;  
+  border: 12px solid #f3f3f3;
+  border-top: 12px solid #000000;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  margin: 1rem auto;
+  animation: spin 1s linear infinite;
 }

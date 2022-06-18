@@ -21,32 +21,40 @@
 
 <body>
     <div id="container">
-        <input list='list' id="option">
+        <input list='list' id="option" class="ontop">
         <datalist id="list">
         </datalist>
-        <div id="legend">
+        <div id="legend" class="ontop box">
             <div id="govt"></div>
             <div id="loaded"></div>
             <div id="jtstations"></div>
         </div>
         <div id="map"></div>
-        <div id="filter">
-            <input type="radio" name="filter" id="Delhi">
+        <div id="filter" class="ontop box">
+            <input type="radio" class="filters" name="filter" id="Delhi">
             <label for="Delhi">Delhi</label>
-            <input type="radio" name="filter" id="Uttar_Pradesh">
+            <input type="radio" class="filters" name="filter" id="Uttar_Pradesh">
             <label for="Uttar_Pradesh">Uttar Pradesh</label>
-            <input type="radio" name="filter" id="Haryana">
+            <input type="radio" class="filters" name="filter" id="Haryana">
             <label for="Haryana">Haryana</label>
-            <input type="radio" name="filter" id="All_India">
+            <input type="radio" class="filters" name="filter" id="All_India">
             <label for="All_India">All India</label>
-            <input type="radio" name="filter" id="Our">
-            <label for="Our">Our Stations</label>
+        </div>
+        <div id="type" class="ontop box">
+            <input type="radio" class="filters" name="type" id="Govt">
+            <label for="Govt">Govt Stations</label>
+            <input type="radio" class="filters" name="type" id="Aircubic">
+            <label for="Aircubic">Aircubic Stations</label>
+            <input type="radio" class="filters" name="type" id="all">
+            <label for="all">All Stations</label>
         </div>
     </div>
 </body>
 <script src="./dist/leaflet.markercluster.js"></script>
 <script src="./indiastations.js"></script>
 <script src="./bbox.js"></script>
+<script src="./layers.js"></script>
+<script src="./funct.js"></script>
 <script>
     function startcounter(filtered) {
         let start = 0;
