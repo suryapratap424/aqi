@@ -48,6 +48,33 @@
             <input type="radio" class="filters" name="type" id="all">
             <label for="all">All Stations</label>
         </div>
+        <div id="device" class="ontop">
+            <!-- <form action="https://jt-stationsapi.herokuapp.com/add" method="post"> -->
+            <form id="add">
+                <input type="text" name="id" id="id" placeholder="enter device id">
+                <button type="submit">Add Device</button>
+            </form>
+            <script>
+                const form = document.getElementById("add")
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    const data = { id: document.getElementById('id').value }
+                    console.log(data);
+                    // fetch("http://localhost:8000/add", {
+                    fetch("https://jt-stationsapi.herokuapp.com/add", {
+                        method: 'post',
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    }).then(r => r.text()).then(x => {
+                        alert(x)
+                        window.location.reload()
+                    })
+                        .catch(e => alert(e.message))
+                })
+            </script>
+        </div>
     </div>
 </body>
 <script src="./dist/leaflet.markercluster.js"></script>

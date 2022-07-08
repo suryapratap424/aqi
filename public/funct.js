@@ -42,9 +42,11 @@ function color(c) {
     return "green";
   }
   if (c < 20) {
-    return "#70b900";
+    return "green-yellow";
+    // return "#70b900";
   }
   if (c < 30) {
+    return "yellow";
     return "#ffeb3b";
   }
   if (c < 40) {
@@ -151,13 +153,16 @@ function loadOur() {
         let { PM25 } = station.list[0].components;
         let b = color("jt");
         // station.color = b;
-        let style = `
-      color: ${b};
-      background-color: ${b};`;
-        // let icon = L.divIcon({className: "Circle",html: `<div style='${style}'>${aqi(x.list[0].components)}</div>`});
+        let style = b
+        // `color: ${b};background-color: ${b};`;
+        
+        // let icon = L.divIcon({
+        //   className: "Circle",
+        //   html: `<div style='${style}'></div>`,
+        // });
         let icon = L.divIcon({
-          className: "Circle",
-          html: `<div style='${style}'></div>`,
+          className: "hexagon-part",
+          html: `<div class="hexagon-shape hex-${style}"></div>`,
         });
         station.coord = { lat: station.lat, lng: station.lng };
         let d = L.marker([station.lat, station.lng], { icon })
@@ -203,14 +208,18 @@ function showDataOnMap(stations) {
       .then((x) => {
         let { pm10, pm2_5 } = x.list[0].components;
         let b = color(Math.max(pm10, pm2_5));
-        let style = `
-          color: ${b};
-          background-color: ${b};`;
+        let style = b
+        // `color: ${b};
+        //   background-color: ${b};`;
 
         let icon = L.divIcon({
-          className: "Circle",
-          html: `<div style='${style}'></div>`,
-        });
+          className: "hexagon-part",
+          html: `<div class="hexagon-shape hex-${style}"></div>`,
+        })
+        // let icon = L.divIcon({
+        //   className: "Circle",
+        //   html: `<div style='${style}'></div>`,
+        // });
         let d = L.marker([station.lat, station.lng], { icon })
           .on("click", onclick)
           .bindPopup(genPop(station), {
