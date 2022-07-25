@@ -51,17 +51,23 @@
         <div id="device" class="ontop">
             <!-- <form action="https://jt-stationsapi.herokuapp.com/add" method="post"> -->
             <form id="add">
-                <input type="text" name="id" id="id" placeholder="enter device id">
+                <input type="text" name="id" id="id" placeholder="enter device id" required>
+                <input type="text" name="lat" id="lat" placeholder="latitude" required>
+                <input type="text" name="lng" id="lng" placeholder="longitude" required>
                 <button type="submit">Add Device</button>
             </form>
             <script>
                 const form = document.getElementById("add")
                 form.addEventListener("submit", function (e) {
                     e.preventDefault();
-                    const data = { id: document.getElementById('id').value }
+                    const data = { 
+                        name: document.getElementById('id').value,
+                        lat: document.getElementById('lat').value,
+                        lng: document.getElementById('lng').value,
+                 }
                     console.log(data);
-                    // fetch("http://localhost:8000/add", {
-                    fetch("https://jt-stationsapi.herokuapp.com/add", {
+                    fetch("http://localhost:8000/add", {
+                    // fetch("https://jt-stationsapi.herokuapp.com/add", {
                         method: 'post',
                         headers: {
                             "Content-type": "application/json"
