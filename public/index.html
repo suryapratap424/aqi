@@ -66,8 +66,8 @@
                         lng: document.getElementById('lng').value,
                  }
                     console.log(data);
-                    fetch("http://localhost:8000/add", {
-                    // fetch("https://jt-stationsapi.herokuapp.com/add", {
+                    // fetch("http://localhost:8000/add", {
+                    fetch("https://jt-stationsapi.herokuapp.com/add", {
                         method: 'post',
                         headers: {
                             "Content-type": "application/json"

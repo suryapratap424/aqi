@@ -139,8 +139,8 @@ function onclick(e) {
 }
 
 function loadOur() {
-  // fetch("https://jt-stationsapi.herokuapp.com/")
-  fetch("http://127.0.0.1:8000/")
+  fetch("https://jt-stationsapi.herokuapp.com/")
+  // fetch("http://127.0.0.1:8000/")
     .then((r) => r.json())
     .then((x) => {
       let start = 0;
