@@ -153,17 +153,18 @@ function loadOur() {
       x.forEach((station) => {
         // let { PM25 } = station.list[0].components;
         let b = color("jt");
+        style = b;
         // station.color = b;
-        let style = `color: ${b};background-color: ${b};`;
+        // let style = `color: ${b};background-color: ${b};`;
         
-        let icon = L.divIcon({
-          className: "Circle",
-          html: `<div style='${style}'></div>`,
-        });
         // let icon = L.divIcon({
-        //   className: "hexagon-part",
-        //   html: `<div class="hexagon-shape hex-${style}"></div>`,
+        //   className: "Circle",
+        //   html: `<div style='${style}'></div>`,
         // });
+        let icon = L.divIcon({
+          className: "hexagon-part",
+          html: `<div class="hexagon-shape hex-${style}"></div>`,
+        });
         station.coord = { lat: station.lat, lng: station.lng };
         let d = L.marker([station.lat, station.lng], { icon })
           .bindPopup(genPop(station), {
@@ -208,16 +209,17 @@ function showDataOnMap(stations) {
       .then((x) => {
         let { pm10, pm2_5 } = x.list[0].components;
         let b = color(Math.max(pm10, pm2_5));
-        let style = `color: ${b};
-          background-color: ${b};`;
-        // let icon = L.divIcon({
-        //   className: "hexagon-part",
-        //   html: `<div class="hexagon-shape hex-${style}"></div>`,
-        // })
+        let style = b;
+        // let style = `color: ${b};
+        //   background-color: ${b};`;
         let icon = L.divIcon({
-          className: "Circle",
-          html: `<div style='${style}'></div>`,
-        });
+          className: "hexagon-part",
+          html: `<div class="hexagon-shape hex-${style}"></div>`,
+        })
+        // let icon = L.divIcon({
+        //   className: "Circle",
+        //   html: `<div style='${style}'></div>`,
+        // });
         let d = L.marker([station.lat, station.lng], { icon })
           .on("click", onclick)
           .bindPopup(genPop(station), {
