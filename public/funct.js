@@ -138,9 +138,9 @@ function onclick(e) {
     .catch((e) => console.log(e));
 }
 
-function loadOur() {
-  fetch("https://jt-stationsapi.herokuapp.com/")
-  // fetch("http://127.0.0.1:8000/")
+async function loadOur() {
+  data = await fetch("https://jt-stationsapi.herokuapp.com/")
+  // data = await fetch("http://127.0.0.1:8000/")
     .then((r) => r.json())
     .then((x) => {
       let start = 0;
@@ -150,38 +150,44 @@ function loadOur() {
           "Our Stations - " + start;
         if (x.length == start) clearInterval(counter);
       }, 5);
-      x.forEach((station) => {
-        // let { PM25 } = station.list[0].components;
-        let b = color("jt");
-        style = b;
-        // station.color = b;
-        // let style = `color: ${b};background-color: ${b};`;
+      hexLayerAIR.data(x.map(s=>[s.lng,s.lat]))
+      return x
+      // x.forEach((station) => {
+      //   // let { PM25 } = station.list[0].components;
+      //   let b = color("jt");
+      //   style = b;
+      //   // station.color = b;
+      //   // let style = `color: ${b};background-color: ${b};`;
         
-        // let icon = L.divIcon({
-        //   className: "Circle",
-        //   html: `<div style='${style}'></div>`,
-        // });
-        let icon = L.divIcon({
-          className: "hexagon-part",
-          html: `<div class="hexagon-shape hex-${style}"></div>`,
-        });
-        station.coord = { lat: station.lat, lng: station.lng };
-        let d = L.marker([station.lat, station.lng], { icon })
-          .bindPopup(genPop(station), {
-            offset: getOffset(station),
-          })
-          .on("click", () => filldata(station));
-        layer.addLayer(d);
-      });
+      //   // let icon = L.divIcon({
+      //   //   className: "Circle",
+      //   //   html: `<div style='${style}'></div>`,
+      //   // });
+      //   let icon = L.divIcon({
+      //     className: "hexagon-part",
+      //     html: `<div class="hexagon-shape hex-${style}"></div>`,
+      //   });
+      //   station.coord = { lat: station.lat, lng: station.lng };
+      //   let d = L.marker([station.lat, station.lng], { icon })
+      //     .bindPopup(genPop(station), {
+      //       offset: getOffset(station),
+      //     })
+      //     .on("click", () => filldata(station));
+      //   layer.addLayer(d);
+      // });
     });
+    // console.log(data)
+    return data
 }
 
 function setmap(state, type) {
   document.getElementById("govt").innerHTML = "";
   document.getElementById("loaded").innerHTML = "";
   document.getElementById("jtstations").innerHTML = "";
+  hexLayerGOV.data([])
+  hexLayerAIR.data([])
   if (type != "Govt") {
-    layer.clearLayers();
+    // layer.clearLayers();
     myMap.flyToBounds(bboxes.find((e) => e.ST_NM == "Delhi").bbox);
     loadOur();
   }
@@ -190,7 +196,9 @@ function setmap(state, type) {
     let filtered = stations.filter((e) =>
       state == "All India" ? true : e.state == state
     );
-    showDataOnMap(filtered);
+    setTimeout(() => {
+      showDataOnMap(filtered);
+    }, 500);
     startcounter(filtered);
     let list = document.getElementById("list");
     list.innerHTML = "";
@@ -201,36 +209,51 @@ function setmap(state, type) {
 }
 
 function showDataOnMap(stations) {
-  layer.clearLayers(); //reset
-  let count = 0;
-  stations.forEach((station) => {
-    fetch(`data?lat=${station.lat}&lon=${station.lng}`)
-      .then((r) => r.json())
-      .then((x) => {
-        let { pm10, pm2_5 } = x.list[0].components;
-        let b = color(Math.max(pm10, pm2_5));
-        let style = b;
+  // console.log(stations)
+  hexLayerGOV.data(stations.map((s) => [s.lng, s.lat]));
+  // hexLayerGOV.colorRange(async(d)=>{
+  //   console.log(d)
+  //   let x = await fetch(`data?lat=${d[0].o[1]}&lon=${d[0].o[0]}`)
+  //     .then((r) => r.json())
+  //     .then((x) => {
+  //       console.log(x)
+  //       let { pm10, pm2_5 } = x.list[0].components;
+  //       let b = color(Math.max(pm10, pm2_5));
+  //       return b
+  //     }).catch(e=>console.log(e.message))
+  //     console.log([x,x])
+  //   return [x,x]
+  // })
+  // layer.clearLayers(); //reset
+  // let count = 0;
+  // stations.forEach((station) => {
+  //   fetch(`data?lat=${station.lat}&lon=${station.lng}`)
+  //     .then((r) => r.json())
+  //     .then((x) => {
+        // let { pm10, pm2_5 } = x.list[0].components;
+        // let b = color(Math.max(pm10, pm2_5));
+        // let style = b;
         // let style = `color: ${b};
         //   background-color: ${b};`;
-        let icon = L.divIcon({
-          className: "hexagon-part",
-          html: `<div class="hexagon-shape hex-${style}"></div>`,
-        })
+        // let icon = L.divIcon({
+        //   className: "hexagon-part",
+        //   html: `<div class="hexagon-shape hex-${style}"></div>`,
+        // })
         // let icon = L.divIcon({
         //   className: "Circle",
         //   html: `<div style='${style}'></div>`,
         // });
-        let d = L.marker([station.lat, station.lng], { icon })
-          .on("click", onclick)
-          .bindPopup(genPop(station), {
-            offset: getOffset(station),
-          });
-        layer.addLayer(d);
-        document.getElementById(
-          "loaded"
-        ).innerHTML = `Loaded Stations - ${++count}`;
-      })
-      .catch((e) => console.log(e.message));
-  });
-  layer.addTo(myMap);
+        // let d = L.marker([station.lat, station.lng], { icon })
+        //   .on("click", onclick)
+        //   .bindPopup(genPop(station), {
+        //     offset: getOffset(station),
+        //   });
+        // layer.addLayer(d);
+      //   document.getElementById(
+      //     "loaded"
+      //   ).innerHTML = `Loaded Stations - ${++count}`;
+      // })
+      // .catch((e) => console.log(e.message));
+  // });
+  // layer.addTo(myMap);
 }
