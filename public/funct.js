@@ -2,7 +2,17 @@ function genPop(station) {
   return `<p>coords:${station.lat},${station.lng}</p>
     <h2 class='heading'>${station.name}</h2>
       <div id='${station.lat.toFixed(4)}'>
-      <div class='loader'></div>
+      <div id="shinebox">
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+        <lines class="shine"></lines>
+      </div>
       </div>
       <div class='bottom'>
       <span class="vals">GOOD</span>
@@ -140,7 +150,7 @@ function onclick(e) {
 
 async function loadOur() {
   data = await fetch("https://jt-stationsapi.herokuapp.com/")
-  // data = await fetch("http://127.0.0.1:8000/")
+    // data = await fetch("http://127.0.0.1:8000/")
     .then((r) => r.json())
     .then((x) => {
       let start = 0;
@@ -150,15 +160,15 @@ async function loadOur() {
           "Our Stations - " + start;
         if (x.length == start) clearInterval(counter);
       }, 5);
-      hexLayerAIR.data(x.map(s=>[s.lng,s.lat]))
-      return x
+      hexLayerAIR.data(x.map((s) => [s.lng, s.lat]));
+      return x;
       // x.forEach((station) => {
       //   // let { PM25 } = station.list[0].components;
       //   let b = color("jt");
       //   style = b;
       //   // station.color = b;
       //   // let style = `color: ${b};background-color: ${b};`;
-        
+
       //   // let icon = L.divIcon({
       //   //   className: "Circle",
       //   //   html: `<div style='${style}'></div>`,
@@ -176,16 +186,16 @@ async function loadOur() {
       //   layer.addLayer(d);
       // });
     });
-    // console.log(data)
-    return data
+  // console.log(data)
+  return data;
 }
 
 function setmap(state, type) {
   document.getElementById("govt").innerHTML = "";
   document.getElementById("loaded").innerHTML = "";
   document.getElementById("jtstations").innerHTML = "";
-  hexLayerGOV.data([])
-  hexLayerAIR.data([])
+  hexLayerGOV.data([]);
+  hexLayerAIR.data([]);
   if (type != "Govt") {
     // layer.clearLayers();
     myMap.flyToBounds(bboxes.find((e) => e.ST_NM == "Delhi").bbox);
@@ -230,30 +240,30 @@ function showDataOnMap(stations) {
   //   fetch(`data?lat=${station.lat}&lon=${station.lng}`)
   //     .then((r) => r.json())
   //     .then((x) => {
-        // let { pm10, pm2_5 } = x.list[0].components;
-        // let b = color(Math.max(pm10, pm2_5));
-        // let style = b;
-        // let style = `color: ${b};
-        //   background-color: ${b};`;
-        // let icon = L.divIcon({
-        //   className: "hexagon-part",
-        //   html: `<div class="hexagon-shape hex-${style}"></div>`,
-        // })
-        // let icon = L.divIcon({
-        //   className: "Circle",
-        //   html: `<div style='${style}'></div>`,
-        // });
-        // let d = L.marker([station.lat, station.lng], { icon })
-        //   .on("click", onclick)
-        //   .bindPopup(genPop(station), {
-        //     offset: getOffset(station),
-        //   });
-        // layer.addLayer(d);
-      //   document.getElementById(
-      //     "loaded"
-      //   ).innerHTML = `Loaded Stations - ${++count}`;
-      // })
-      // .catch((e) => console.log(e.message));
+  // let { pm10, pm2_5 } = x.list[0].components;
+  // let b = color(Math.max(pm10, pm2_5));
+  // let style = b;
+  // let style = `color: ${b};
+  //   background-color: ${b};`;
+  // let icon = L.divIcon({
+  //   className: "hexagon-part",
+  //   html: `<div class="hexagon-shape hex-${style}"></div>`,
+  // })
+  // let icon = L.divIcon({
+  //   className: "Circle",
+  //   html: `<div style='${style}'></div>`,
+  // });
+  // let d = L.marker([station.lat, station.lng], { icon })
+  //   .on("click", onclick)
+  //   .bindPopup(genPop(station), {
+  //     offset: getOffset(station),
+  //   });
+  // layer.addLayer(d);
+  //   document.getElementById(
+  //     "loaded"
+  //   ).innerHTML = `Loaded Stations - ${++count}`;
+  // })
+  // .catch((e) => console.log(e.message));
   // });
   // layer.addTo(myMap);
 }
