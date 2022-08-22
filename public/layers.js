@@ -1,4 +1,4 @@
-const myMap = L.map("map").setView([23, 80], 5);
+const myMap = L.map("map",{ zoomControl: false }).setView([23, 80], 5);
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const attribution =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
@@ -8,6 +8,9 @@ const osm = L.tileLayer(tileUrl, {
   // noWrap: true,
 });
 // osm.addTo(myMap);
+L.control.zoom({
+  position: 'bottomright'
+}).addTo(myMap);
 
 const CartoDB_DarkMatter = L.tileLayer(
   "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
